@@ -1,8 +1,5 @@
 package com.abauer.oceans.window;
 
-import java.awt.Point;
-import java.awt.Toolkit;
-
 import javax.swing.JFrame;
 
 public class GameWindow extends JFrame{
@@ -10,9 +7,12 @@ public class GameWindow extends JFrame{
 	private static final long serialVersionUID = 1L;
 	
 	WindowSize ws = WindowSize.W1920_H1080;
+	//TODO file reading options
+	//TODO auto-detection
+	//TODO add more sizes
 	
 	public GameWindow(){
-		hideBorder();
+		initWindow();
 	}
 	
 	public void showMenu(){
@@ -20,11 +20,12 @@ public class GameWindow extends JFrame{
 		toFront();
 	}
 	
-	private void hideBorder(){
+	private void initWindow(){
 		dispose();
 		setUndecorated(true);
+		setResizable(false);
+		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		setSize(ws);
-		setAlwaysOnTop(true);
 		setLocation(ws);
 	}
 	
@@ -36,7 +37,6 @@ public class GameWindow extends JFrame{
 	
 	private void setLocation(WindowSize ws){
 		if (ws == WindowSize.W1920_H1080)
-			setLocation(10,10);
-	}
-	
+			setLocation(0,0);
+	}	
 }
