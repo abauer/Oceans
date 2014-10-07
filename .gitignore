@@ -1,0 +1,16 @@
+$ cat .gitignore
+
+.batchconfig
+.settings/*
+true
+
+*~
+*.class
+*.jcp
+*.jcu
+*.jcw
+*.log
+
+target/*
+bin/*
+doc/*
