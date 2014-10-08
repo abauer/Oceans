@@ -12,8 +12,7 @@ public class Game extends JComponent implements MouseListener{
 
 	private static final long serialVersionUID = 1L;
 	
-	float value[][] = new float[5][5];
-	int square[][] = new int[128][2];
+	float value[][] = new float[9][9];
 	
 	public Game(){
 		addMouseListener(this);
@@ -30,40 +29,47 @@ public class Game extends JComponent implements MouseListener{
 		
 		//2048x2048 (+1)
 	
-		value[0][0]=value[4][0]=value[0][4]=value[4][4]=1.0f;
-		
-		square[0][0]=square[0][1]=0;
-		square[1][0]=square[1][1]=4;
-		for(int index=0; index<1; index++){
-			System.out.println("Outer Loop"+(index+1));
-			for(int count=0; count<(Math.pow(4, index)); count++){
-				//square method
-				System.out.println("Square Loop "+(1+count));
-				int xavg= (short)((square[0][0]+square[1][0])/2);
-				int yavg= (short)((square[0][1]+square[1][1])/2);
-				value[xavg][yavg]=(average(value[0][0],value[0][1],value[4][0],value[0][4]))+random();
-				System.out.println(value[xavg][yavg]);
-			}
-		
-			for(int count=0; count<(1); count++){
-				//diamondMeethod(value,coord);
-			}			
+		value[0][0]=value[8][0]=value[0][8]=value[8][8]=1.0f;
+		diamondMethod(new int[]{0,0,8,8},new int[]{0,8,0,8},3);
+	}
+	
+	private void squareMethod(int x, int y,int distance, int iterations){
+		iterations-=1;
+		value[x-distance][y]=average(value[x][y],value[x-distance][y-distance],value[x-distance][y+distance])+random(1.0);
+		value[x+distance][y]=average(value[x][y],value[x+distance][y-distance],value[x+distance][y+distance])+random(1.0);
+		value[x][y-distance]=average(value[x][y],value[x-distance][y-distance],value[x+distance][y-distance])+random(1.0);
+		value[x][y+distance]=average(value[x][y],value[x-distance][y+distance],value[x+distance][y+distance])+random(1.0);
+		if(iterations>0){
+			diamondMethod(new int[]{x-distance,x-distance,x,x},new int[]{y-distance,y,y-distance,y},iterations);
+			diamondMethod(new int[]{x-distance,x-distance,x,x},new int[]{y,y+distance,y,y+distance},iterations);
+			diamondMethod(new int[]{x,x,x+distance,x+distance},new int[]{y-distance,y,y-distance,y},iterations);
+			diamondMethod(new int[]{x,x,x+distance,x+distance},new int[]{y,y+distance,y,y+distance},iterations);
 		}
-		
 	}
 	
-	private float random(){
-		return (float) ((Math.random()*2)-1);
+	private void diamondMethod(int[] x, int[] y,int iterations){
+		int x1=(x[3]+x[0])/2;
+		int y1=(y[3]+y[0])/2;
+		value[x1][y1]=average(value[x[0]][y[0]],value[x[3]][y[0]],value[x[0]][y[3]],value[x[3]][y[3]])+random(1.0);
+		squareMethod(x1,y1,x1-x[0],iterations);
 	}
 	
-	private float average(float a, float b, float c, float d){
-		return (float)((a+b+c+d)/4);
+	private float random(double range){
+		return (float) ((Math.random()*2*range)-1*range);
+	}
+	
+	private float average(float... a){
+		float sum = 0f;
+		for(int index=0; index<a.length; index++){
+			sum+=a[index];
+		}
+		return (float)(sum/a.length);
 	}
 	
 	public void paint(Graphics g){		
 		
-		for(int index=0; index<5; index++){
-			for(int count=0; count<5; count++){
+		for(int index=0; index<9; index++){
+			for(int count=0; count<9; count++){
 				String temp = new DecimalFormat("0.00").format((double)value[index][count]);
 				g.drawString(temp,(index+1)*50+200,(count+1)*50+200);
 			}
