@@ -70,7 +70,11 @@ public class Game extends JComponent implements MouseListener{
 		
 		for(int index=0; index<9; index++){
 			for(int count=0; count<9; count++){
+				System.out.println(150*((value[index][count]+1)/5));
+				g.setColor(new Color(1,(int)(150*((value[index][count]+1)/5)),254));
+				g.fillRect((index+1)*50+200-15,(count+1)*50+200-30	,50,50);
 				String temp = new DecimalFormat("0.00").format((double)value[index][count]);
+				g.setColor(Color.RED);
 				g.drawString(temp,(index+1)*50+200,(count+1)*50+200);
 			}
 		}
