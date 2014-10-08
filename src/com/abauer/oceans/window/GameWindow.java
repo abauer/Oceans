@@ -5,6 +5,7 @@ import javax.swing.JFrame;
 public class GameWindow extends JFrame{
 
 	private static final long serialVersionUID = 1L;
+	Game g;
 	
 	WindowSize ws = WindowSize.W1920_H1080;
 	//TODO file reading options
@@ -12,12 +13,17 @@ public class GameWindow extends JFrame{
 	//TODO add more sizes
 	
 	public GameWindow(){
+		initGame();
 		initWindow();
 	}
 	
 	public void showMenu(){
 		setVisible(true);
 		toFront();
+	}
+	
+	private void initGame(){
+		g = new Game();
 	}
 	
 	private void initWindow(){
@@ -27,6 +33,7 @@ public class GameWindow extends JFrame{
 		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		setSize(ws);
 		setLocation(ws);
+		add(g);
 	}
 	
 	private void setSize(WindowSize ws)
