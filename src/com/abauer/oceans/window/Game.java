@@ -4,15 +4,14 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.text.DecimalFormat;
 
 import javax.swing.JComponent;
 
 public class Game extends JComponent implements MouseListener{
 
 	private static final long serialVersionUID = 1L;
-	
-	float value[][] = new float[9][9];
+	short size = 512;//perfect square
+	float value[][] = new float[size+1][size+1];
 	
 	public Game(){
 		addMouseListener(this);
@@ -29,8 +28,8 @@ public class Game extends JComponent implements MouseListener{
 		
 		//2048x2048 (+1)
 	
-		value[0][0]=value[8][0]=value[0][8]=value[8][8]=1.0f;
-		diamondMethod(new int[]{0,0,8,8},new int[]{0,8,0,8},1.0,3);
+		value[0][0]=value[size][0]=value[0][size]=value[size][size]=1.0f;
+		diamondMethod(new int[]{0,0,size,size},new int[]{0,size,0,size},1.0, (int) (Math.log(size)/Math.log(2)) );
 	}
 	
 	private void squareMethod(int x, int y,int distance,double rand, int iterations){
@@ -51,7 +50,7 @@ public class Game extends JComponent implements MouseListener{
 		int x1=(x[3]+x[0])/2;
 		int y1=(y[3]+y[0])/2;
 		value[x1][y1]=average(value[x[0]][y[0]],value[x[3]][y[0]],value[x[0]][y[3]],value[x[3]][y[3]])+random(1.0);
-		squareMethod(x1,y1,x1-x[0],rand/2,iterations);
+		squareMethod(x1,y1,x1-x[0],rand/3,iterations);
 	}
 	
 	private float random(double range){
@@ -68,16 +67,34 @@ public class Game extends JComponent implements MouseListener{
 	
 	public void paint(Graphics g){		
 		
-		for(int index=0; index<9; index++){
-			for(int count=0; count<9; count++){
-				System.out.println(150*((value[index][count]+1)/5));
-				g.setColor(new Color(1,(int)(150*((value[index][count]+1)/5)),254));
-				g.fillRect((index+1)*50+200-15,(count+1)*50+200-30	,50,50);
-				String temp = new DecimalFormat("0.00").format((double)value[index][count]);
-				g.setColor(Color.RED);
-				g.drawString(temp,(index+1)*50+200,(count+1)*50+200);
+		float max = 0;
+		float min = 0;
+		
+		for(int index=0; index<size+1; index++){
+			for(int count=0; count<size+1; count++){
+//				max = (value[index][count]>max) ? value[index][count] : max;
+//				min = (value[index][count]<min) ? value[index][count] : min;
+				
+				//7...-5
+				float mul = (((value[index][count]+5)/12));
+				
+//				max = mul*255>max ? value[index][count] : max;
+//				min = mul*255<min ? value[index][count] : min;
+				
+//				System.out.println("value: "+value[index][count]+" converts to: "+  (((value[index][count]+3)/8)) );
+				g.setColor(new Color(1,(int)(150*mul),(int)(254*mul)));
+				g.fillRect((index+1),(count+1),1,1);
+				
+//				String temp = new DecimalFormat("0.00").format((double)value[index][count]);
+//				g.setColor(Color.RED);
+//				g.drawString(temp,(index+1)*10,(count+1)*10);
 			}
 		}
+		
+		System.out.println("max: "+max+" min: "+min);
+		
+//		initArray();
+		repaint();
 		
 		g.setColor(Color.RED);
 		g.fillRect(1895, 0, 25, 25); //exit box
