@@ -84,7 +84,7 @@ public class Game extends JComponent implements MouseListener{
 			for(int count=0; count<size+1; count++){
 				float mul = (((value[index][count]+5)/12));
 				
-				g.setColor(new Color(1,(int)(150*mul),(int)(254*mul)));
+				g.setColor(new Color(1,(int)(150*mul),(int)((214*mul)+40)));
 				g.fillRect((index+1),(count+1),1,1);
 			}
 		}
