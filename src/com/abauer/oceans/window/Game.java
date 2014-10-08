@@ -4,13 +4,14 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.text.DecimalFormat;
 
 import javax.swing.JComponent;
 
 public class Game extends JComponent implements MouseListener{
 
 	private static final long serialVersionUID = 1L;
-	short size = 1024;//perfect square
+	short size = 16;//perfect square
 	float value[][] = new float[size+1][size+1];
 	
 	public Game(){
@@ -30,6 +31,7 @@ public class Game extends JComponent implements MouseListener{
 	
 		value[0][0]=value[size][0]=value[0][size]=value[size][size]=1.0f;
 		diamondMethod(new int[]{0,0,size,size},new int[]{0,size,0,size},1.0, (int) (Math.log(size)/Math.log(2)) );
+//		iteritiveMethod();
 	}
 	
 	private void squareMethod(int x, int y,int distance,double rand, int iterations){
@@ -85,7 +87,11 @@ public class Game extends JComponent implements MouseListener{
 				float mul = (((value[index][count]+5)/12));
 				
 				g.setColor(new Color(1,(int)(150*mul),(int)((214*mul)+40)));
-				g.fillRect((index+1),(count+1),1,1);
+				g.fillRect((index+1)*50,(count+1)*50,45,45);
+				
+				g.setColor(Color.RED);
+				String temp = new DecimalFormat("0.00").format((double)value[index][count]);
+				g.drawString(temp,(index+1)*50+13,(count+1)*50+26);
 			}
 		}
 		
