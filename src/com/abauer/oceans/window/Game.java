@@ -10,7 +10,7 @@ import javax.swing.JComponent;
 public class Game extends JComponent implements MouseListener{
 
 	private static final long serialVersionUID = 1L;
-	short size = 512;//perfect square
+	short size = 1024;//perfect square
 	float value[][] = new float[size+1][size+1];
 	
 	public Game(){
@@ -34,10 +34,23 @@ public class Game extends JComponent implements MouseListener{
 	
 	private void squareMethod(int x, int y,int distance,double rand, int iterations){
 		iterations-=1;
-		value[x-distance][y]=average(value[x][y],value[x-distance][y-distance],value[x-distance][y+distance])+random(1.0);
-		value[x+distance][y]=average(value[x][y],value[x+distance][y-distance],value[x+distance][y+distance])+random(1.0);
-		value[x][y-distance]=average(value[x][y],value[x-distance][y-distance],value[x+distance][y-distance])+random(1.0);
-		value[x][y+distance]=average(value[x][y],value[x-distance][y+distance],value[x+distance][y+distance])+random(1.0);
+		if(x-2*distance<0)
+			value[x-distance][y]=average(value[x][y],value[x-distance][y-distance],value[x-distance][y+distance])+random(1.0);
+		else
+			value[x-distance][y]=average(value[x][y],value[x-distance][y-distance],value[x-distance][y+distance],value[x-2*distance][y])+random(1.0);
+		if(x+2*distance>size-1)
+			value[x+distance][y]=average(value[x][y],value[x+distance][y-distance],value[x+distance][y+distance])+random(1.0);
+		else
+			value[x+distance][y]=average(value[x][y],value[x+distance][y-distance],value[x+distance][y+distance],value[x+2*distance][y])+random(1.0);
+		if(y-2*distance<0)
+			value[x][y-distance]=average(value[x][y],value[x-distance][y-distance],value[x+distance][y-distance])+random(1.0);
+		else
+			value[x][y-distance]=average(value[x][y],value[x-distance][y-distance],value[x+distance][y-distance],value[x][y-2*distance])+random(1.0);
+		if(y+2*distance>size-1)
+			value[x][y+distance]=average(value[x][y],value[x-distance][y+distance],value[x+distance][y+distance])+random(1.0);
+		else
+			value[x][y+distance]=average(value[x][y],value[x-distance][y+distance],value[x+distance][y+distance],value[x][y+2*distance])+random(1.0);
+		
 		if(iterations>0){
 			diamondMethod(new int[]{x-distance,x-distance,x,x},new int[]{y-distance,y,y-distance,y},rand/2,iterations);
 			diamondMethod(new int[]{x-distance,x-distance,x,x},new int[]{y,y+distance,y,y+distance},rand/2,iterations);
@@ -67,34 +80,17 @@ public class Game extends JComponent implements MouseListener{
 	
 	public void paint(Graphics g){		
 		
-		float max = 0;
-		float min = 0;
-		
 		for(int index=0; index<size+1; index++){
 			for(int count=0; count<size+1; count++){
-//				max = (value[index][count]>max) ? value[index][count] : max;
-//				min = (value[index][count]<min) ? value[index][count] : min;
-				
-				//7...-5
 				float mul = (((value[index][count]+5)/12));
 				
-//				max = mul*255>max ? value[index][count] : max;
-//				min = mul*255<min ? value[index][count] : min;
-				
-//				System.out.println("value: "+value[index][count]+" converts to: "+  (((value[index][count]+3)/8)) );
 				g.setColor(new Color(1,(int)(150*mul),(int)(254*mul)));
 				g.fillRect((index+1),(count+1),1,1);
-				
-//				String temp = new DecimalFormat("0.00").format((double)value[index][count]);
-//				g.setColor(Color.RED);
-//				g.drawString(temp,(index+1)*10,(count+1)*10);
 			}
 		}
 		
-		System.out.println("max: "+max+" min: "+min);
-		
 //		initArray();
-		repaint();
+//		repaint();
 		
 		g.setColor(Color.RED);
 		g.fillRect(1895, 0, 25, 25); //exit box
