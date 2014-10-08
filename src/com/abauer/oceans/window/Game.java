@@ -4,12 +4,16 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.text.DecimalFormat;
 
 import javax.swing.JComponent;
 
 public class Game extends JComponent implements MouseListener{
 
 	private static final long serialVersionUID = 1L;
+	
+	float value[][] = new float[5][5];
+	int square[][] = new int[128][2];
 	
 	public Game(){
 		addMouseListener(this);
@@ -25,25 +29,45 @@ public class Game extends JComponent implements MouseListener{
 //		}
 		
 		//2048x2048 (+1)
-//		float value[][] = new float[5][5];
-//		
-//		short coord[][] = new short[128][2];
-//	
-//		value[0][0]=value[4][0]=value[0][4]=value[4][4]=1.0f;
-//		coord[0][0]=coord[0][1]=coord[1][0]=coord[2][1]=0;
-//		coord[1][1]=coord[2][0]=coord[3][0]=coord[3][1]=4;
-//		short points=4;
-//		for(int index=0; index<5; index++){
-//			for(int count=0; count<points; count+=2){
-//				short xavg = (short) ((coord[count][0])/2);
-//				short yavg = (short) ((ys[count]-ys[count+1])/2);
-//			}
-//		}
+	
+		value[0][0]=value[4][0]=value[0][4]=value[4][4]=1.0f;
 		
+		square[0][0]=square[0][1]=0;
+		square[1][0]=square[1][1]=4;
+		for(int index=0; index<1; index++){
+			System.out.println("Outer Loop"+(index+1));
+			for(int count=0; count<(Math.pow(4, index)); count++){
+				//square method
+				System.out.println("Square Loop "+(1+count));
+				int xavg= (short)((square[0][0]+square[1][0])/2);
+				int yavg= (short)((square[0][1]+square[1][1])/2);
+				value[xavg][yavg]=(average(value[0][0],value[0][1],value[4][0],value[0][4]))+random();
+				System.out.println(value[xavg][yavg]);
+			}
+		
+			for(int count=0; count<(1); count++){
+				//diamondMeethod(value,coord);
+			}			
+		}
+		
+	}
+	
+	private float random(){
+		return (float) ((Math.random()*2)-1);
+	}
+	
+	private float average(float a, float b, float c, float d){
+		return (float)((a+b+c+d)/4);
 	}
 	
 	public void paint(Graphics g){		
 		
+		for(int index=0; index<5; index++){
+			for(int count=0; count<5; count++){
+				String temp = new DecimalFormat("0.00").format((double)value[index][count]);
+				g.drawString(temp,(index+1)*50+200,(count+1)*50+200);
+			}
+		}
 		
 		g.setColor(Color.RED);
 		g.fillRect(1895, 0, 25, 25); //exit box
