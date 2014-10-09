@@ -119,23 +119,20 @@ public class Game extends JComponent implements MouseListener{
 	
 	int sx=0;
 	int sy=0;
-	
 	public void paint(Graphics g){
-		
 		for(int index=0; index<size+1; index++){
 			for(int count=0; count<size+1; count++){
 				float mul = (((value[index][count]+5)/12));
-				g.setColor(new Color(1,(int)(150*mul),(int)((214*mul)+40)));
+				g.setColor(new Color(1,(int)(180*mul),(int)((214*mul)+40)));
+//				g.setColor(new Color((int)(254*mul),(int)(254*mul),(int)(254*mul)));
 				g.fillRect((index)+sx,(count)+sy,1,1);
-				g.fillRect((index)+sx+1025,(count)+sy,1,1);
 			}
 		}
 		g.setColor(Color.RED);
-		g.drawLine(sx+1025, 1000, sx+1025, 1500);
-//		initArray();
-		
 		g.fillRect(1895, 0, 25, 25); //exit box
-		sx-=10;//sy-=5;
+//		sx-=10;//sy-=5;
+		
+//		initArray();
 		repaint();
 	}
 	
