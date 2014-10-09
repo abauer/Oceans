@@ -10,11 +10,12 @@ import javax.swing.JComponent;
 public class Game extends JComponent implements MouseListener{
 
 	private static final long serialVersionUID = 1L;
-	short size = 2048;//perfect square
+	short size = 1024;//perfect square
 	float value[][] = new float[size+1][size+1];
 	
 	public Game(){
 		addMouseListener(this);
+		setDoubleBuffered(true);
 		initArray();
 	}
 	
@@ -52,19 +53,19 @@ public class Game extends JComponent implements MouseListener{
 	private void diamond(int x, int y, int dis,float rand){
 		float avg=0f;
 		if(x-dis<0)
-			avg+=value[size-dis][y];
+			avg+=value[x-dis+size][y];
 		else
 			avg+=value[x-dis][y];
 		if(y-dis<0)
-			avg+=value[x][size-dis];
+			avg+=value[x][y-dis+size];
 		else
 			avg+=value[x][y-dis];
 		if(x+dis>size-1)
-			avg+=value[dis][y];
+			avg+=value[x+dis-size][y];
 		else
 			avg+=value[x+dis][y];
 		if(y+dis>size-1)
-			avg+=value[x][dis];
+			avg+=value[x][y+dis-size];
 		else
 			avg+=value[x][y+dis];
 		value[x][y]=(avg/4)+random(rand);
@@ -116,29 +117,26 @@ public class Game extends JComponent implements MouseListener{
 		return (float)(sum/a.length);
 	}
 	
-	public void paint(Graphics g){		
+	int sx=0;
+	int sy=0;
+	
+	public void paint(Graphics g){
 		
 		for(int index=0; index<size+1; index++){
 			for(int count=0; count<size+1; count++){
 				float mul = (((value[index][count]+5)/12));
-				
 				g.setColor(new Color(1,(int)(150*mul),(int)((214*mul)+40)));
-				g.fillRect((index),(count),1,1);
-				
-//				String temp = new DecimalFormat("0.00").format((double)value[index][count]);
-//				if(temp.equals("0.00"))
-//					g.setColor(Color.BLACK);
-//				else
-//					g.setColor(Color.RED);
-//				g.drawString(temp,(index+1)*50+13,(count+1)*50+26);
+				g.fillRect((index)+sx,(count)+sy,1,1);
+				g.fillRect((index)+sx+1025,(count)+sy,1,1);
 			}
 		}
-		
-//		initArray();
-//		repaint();
-		
 		g.setColor(Color.RED);
+		g.drawLine(sx+1025, 1000, sx+1025, 1500);
+//		initArray();
+		
 		g.fillRect(1895, 0, 25, 25); //exit box
+		sx-=10;//sy-=5;
+		repaint();
 	}
 	
 	private boolean doExit(int x, int y) {return x>1895 && y<25;} 
