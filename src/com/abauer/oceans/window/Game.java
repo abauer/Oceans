@@ -30,8 +30,85 @@ public class Game extends JComponent implements MouseListener{
 		//2048x2048 (+1)
 	
 		value[0][0]=value[size][0]=value[0][size]=value[size][size]=1.0f;
-		diamondMethod(new int[]{0,0,size,size},new int[]{0,size,0,size},1.0, (int) (Math.log(size)/Math.log(2)) );
-//		iteritiveMethod();
+//		diamondMethod(new int[]{0,0,size,size},new int[]{0,size,0,size},1.0, (int) (Math.log(size)/Math.log(2)) );
+		iteritiveMethod();
+	}
+	
+	private void iteritiveMethod(){
+		
+//		While the length of the side of the squares 
+//		 is greater than zero {
+//		 Pass through the array and perform the diamond 
+//		 step for each square present.
+//		 Pass through the array and perform the square 
+//		 step for each diamond present.
+//		 Reduce the random number range.
+//		 }
+		int dis = size;
+		int iter = 0;
+		while(iter<3){//dis>1
+			int newdis=dis/2;
+			for(int index=0; index<size/dis; index++){
+				for(int count=0; count<size/dis; count++){
+					System.out.println("diamond");
+					int x = index*dis+newdis; int y = count*dis+newdis;
+					value[x][y]=average(value[x+newdis][y+newdis],value[x+newdis][y-newdis],value[x-newdis][y+newdis],value[x-newdis][y-newdis])+random(1.0f);
+				}
+			}
+			
+			for(int index=0; index<(size/dis)*2+1; index++){
+				if(index%2==0)
+					for(int count=0; count<(size/dis)+0; count++){
+						System.out.println("square even");
+						int x = index*newdis; int y = (count*2+1)*newdis;
+//						value[x][y]=average(value[x+newdis][y+newdis],value[x+newdis][y-newdis],value[x-newdis][y+newdis],value[x-newdis][y-newdis])+random(1.0f);
+						diamond(x,y,newdis,1.0f);
+					}
+				else
+					for(int count=0; count<(size/dis)+1; count++){
+						System.out.println("square odd");
+						int x = index*newdis; int y = (count*2)*newdis;
+//						value[x][y]=average(value[x+newdis][y+newdis],value[x+newdis][y-newdis],value[x-newdis][y+newdis],value[x-newdis][y-newdis])+random(1.0f);
+						diamond(x,y,newdis,1.0f);
+					}
+			}
+			
+			
+			dis/=2;
+			iter++;
+		}
+	}
+	
+	private void diamond(int x, int y, int dis,float rand){
+		float avg=0f;
+		if(x-dis<0)
+			avg+=value[size-dis][y];
+		else
+			avg+=value[x-dis][y];
+		if(y-dis<0)
+			avg+=value[x][size-dis];
+		else
+			avg+=value[x][y-dis];
+		if(x+dis>size-1)
+			avg+=value[dis][y];
+		else
+			avg+=value[x+dis][y];
+		if(y+dis>size-1)
+			avg+=value[x][dis];
+		else
+			avg+=value[x][y+dis];
+		
+		value[x][y]=(avg/4)+random(rand);
+		
+		//		if (x >= 0)
+//	    { avg += terrain[x][y + half]; sum += 1.0; }
+//	    if (y >= 0)
+//	    { avg += terrain[x + half][y]; sum += 1.0; }
+//	    if (x + side <= divisions)
+//	    { avg += terrain[x + side][y + half]; sum += 1.0; }
+//	    if (y + side <= divisions)
+//	    { avg += terrain[x + half][y + side]; sum += 1.0; }
+//	    terrain[x + half][y + half] = avg / sum + rnd () * scale;
 	}
 	
 	private void squareMethod(int x, int y,int distance,double rand, int iterations){
@@ -89,8 +166,12 @@ public class Game extends JComponent implements MouseListener{
 				g.setColor(new Color(1,(int)(150*mul),(int)((214*mul)+40)));
 				g.fillRect((index+1)*50,(count+1)*50,45,45);
 				
-				g.setColor(Color.RED);
 				String temp = new DecimalFormat("0.00").format((double)value[index][count]);
+				if(temp.equals("0.00"))
+					g.setColor(Color.BLACK);
+				else
+					g.setColor(Color.RED);
+				
 				g.drawString(temp,(index+1)*50+13,(count+1)*50+26);
 			}
 		}
