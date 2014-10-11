@@ -73,23 +73,23 @@ Graphics g = background.getGraphics();
 	
 	private void diamond(int x, int y, int dis,float rand){
 		float avg=0f;
-		if(x-dis<0)
+		if(x-dis<=0)
 			avg+=value[x-dis+size][y];
 		else
 			avg+=value[x-dis][y];
-		if(y-dis<0)
+		if(y-dis<=0)
 			avg+=value[x][y-dis+size];
 		else
 			avg+=value[x][y-dis];
-		if(x+dis>size)
+		if(x+dis>=size)
 			avg+=value[x+dis-size][y];
 		else
 			avg+=value[x+dis][y];
-		if(y+dis>size)
+		if(y+dis>=size)
 			avg+=value[x][y+dis-size];
 		else
 			avg+=value[x][y+dis];
-//		
+		
 //		int count = 0;
 //		if(x-dis>0){
 //			avg+=value[x-dis][y];
@@ -168,13 +168,13 @@ Graphics g = background.getGraphics();
 	int sy=0;
 	public void paint(Graphics g){
 		g.drawImage(background, sx, sy, null);
-		g.drawImage(background, sx, size*pixelSize+sy, null);
+//		g.drawImage(background, sx, size*pixelSize+sy, null);
 		g.drawImage(background, size*pixelSize+sx, sy, null);
-		g.drawImage(background, size*pixelSize+sx, size*pixelSize+sy, null);
+//		g.drawImage(background, size*pixelSize+sx, size*pixelSize+sy, null);
 		g.setColor(Color.RED);
 		g.fillRect(1895, 0, 25, 25); //exit box
 		sx--;
-		sy--;
+//		sy--;
 		if(sx<=-size*pixelSize)
 			sx=0;
 		if(sy<=-size*pixelSize)
