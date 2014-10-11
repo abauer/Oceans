@@ -12,12 +12,13 @@ import javax.swing.JComponent;
 public class Game extends JComponent implements MouseListener{
 
 	private static final long serialVersionUID = 1L;
-	short size = 256;//perfect square
+	final static short size = 256;//perfect square
 	float value[][] = new float[size+1][size+1];
 	Image background;
+	final static int pixelSize = 10;
 	
 	public Game(){
-		background = new BufferedImage(size*10,size*10,BufferedImage.TYPE_INT_RGB);
+		background = new BufferedImage(size*pixelSize,size*pixelSize,BufferedImage.TYPE_INT_RGB);
 		addMouseListener(this);
 		setDoubleBuffered(true);
 		initArray();
@@ -35,14 +36,10 @@ Graphics g = background.getGraphics();
 		
 		for(int index=0; index<size+1; index++){
 			for(int count=0; count<size+1; count++){
-				if(value[index][count]!=1.0f){
-					float mul = (((value[index][count]+5)/12));
-					g.setColor(new Color(1,(int)(180*mul),(int)((214*mul)+40)));
-//					g.setColor(new Color((int)(254*mul),(int)(254*mul),(int)(254*mul)));
-				}
-				else
-					g.setColor(Color.red);
-				g.fillRect((index*10)+sx,(count*10)+sy,10,10);
+				float mul = (((value[index][count]+5)/12));
+				g.setColor(new Color(1,(int)(180*mul),(int)((214*mul)+40)));
+//				g.setColor(new Color((int)(254*mul),(int)(254*mul),(int)(254*mul)));
+				g.fillRect((index*pixelSize),(count*pixelSize),pixelSize,pixelSize);
 			}
 		}
 	}
@@ -76,49 +73,49 @@ Graphics g = background.getGraphics();
 	
 	private void diamond(int x, int y, int dis,float rand){
 		float avg=0f;
-//		if(x-dis<0)
-//			avg+=value[x-dis+size][y];
-//		else
-//			avg+=value[x-dis][y];
-//		if(y-dis<0)
-//			avg+=value[x][y-dis+size];
-//		else
-//			avg+=value[x][y-dis];
-//		if(x+dis>size)
-//			avg+=value[x+dis-size][y];
-//		else
-//			avg+=value[x+dis][y];
-//		if(y+dis>size)
-//			avg+=value[x][y+dis-size];
-//		else
-//			avg+=value[x][y+dis];
-		
-		int count = 0;
-		if(x-dis>0){
+		if(x-dis<0)
+			avg+=value[x-dis+size][y];
+		else
 			avg+=value[x-dis][y];
-			count++;
-		}
-		if(y-dis>0){
+		if(y-dis<0)
+			avg+=value[x][y-dis+size];
+		else
 			avg+=value[x][y-dis];
-			count++;
-		}			
-		if(x+dis<size){
+		if(x+dis>size)
+			avg+=value[x+dis-size][y];
+		else
 			avg+=value[x+dis][y];
-			count++;
-		}
-		if(y+dis<size){
+		if(y+dis>size)
+			avg+=value[x][y+dis-size];
+		else
 			avg+=value[x][y+dis];
-			count++;
-		}
-		if(x==size-1){
-			value[x][y]=value[0][y];
-			return;
-		}
-		if(y==size-1){
-			value[x][y]=value[x][0];
-			return;
-		}
-		value[x][y]=(avg/count)+random(rand);
+//		
+//		int count = 0;
+//		if(x-dis>0){
+//			avg+=value[x-dis][y];
+//			count++;
+//		}
+//		if(y-dis>0){
+//			avg+=value[x][y-dis];
+//			count++;
+//		}			
+//		if(x+dis<size){
+//			avg+=value[x+dis][y];
+//			count++;
+//		}
+//		if(y+dis<size){
+//			avg+=value[x][y+dis];
+//			count++;
+//		}
+//		if(x==size-1){
+//			value[x][y]=value[0][y];
+//			return;
+//		}
+//		if(y==size-1){
+//			value[x][y]=value[x][0];
+//			return;
+//		}
+		value[x][y]=(avg/4)+random(rand);
 	}
 	
 	private void squareMethod(int x, int y,int distance,double rand, int iterations){
@@ -171,17 +168,16 @@ Graphics g = background.getGraphics();
 	int sy=0;
 	public void paint(Graphics g){
 		g.drawImage(background, sx, sy, null);
-//		g.drawImage(background, sx, size*10+sy, null);
-		g.drawImage(background, size*10+sx-10, sy, null);
-//		g.drawImage(background, 1920+sx, 1080+sy, null);
+		g.drawImage(background, sx, size*pixelSize+sy, null);
+		g.drawImage(background, size*pixelSize+sx, sy, null);
+		g.drawImage(background, size*pixelSize+sx, size*pixelSize+sy, null);
 		g.setColor(Color.RED);
-		g.drawLine(size*10+sx, 500, size*10+sx, 1080);
 		g.fillRect(1895, 0, 25, 25); //exit box
 		sx--;
-//		sy--;
-		if(sx<=-size*10)
+		sy--;
+		if(sx<=-size*pixelSize)
 			sx=0;
-		if(sy<=-1080)
+		if(sy<=-size*pixelSize)
 			sy=0;
 //		initArray();
 		repaint();
