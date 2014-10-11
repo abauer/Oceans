@@ -2,18 +2,22 @@ package com.abauer.oceans.window;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Image;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.image.BufferedImage;
 
 import javax.swing.JComponent;
 
 public class Game extends JComponent implements MouseListener{
 
 	private static final long serialVersionUID = 1L;
-	short size = 1024;//perfect square
+	short size = 256;//perfect square
 	float value[][] = new float[size+1][size+1];
+	Image background;
 	
 	public Game(){
+		background = new BufferedImage(size*10,size*10,BufferedImage.TYPE_INT_RGB);
 		addMouseListener(this);
 		setDoubleBuffered(true);
 		initArray();
@@ -23,52 +27,98 @@ public class Game extends JComponent implements MouseListener{
 		value[0][0]=value[size][0]=value[0][size]=value[size][size]=1.0f;
 //		diamondMethod(new int[]{0,0,size,size},new int[]{0,size,0,size},1.0, (int) (Math.log(size)/Math.log(2)) );
 		iteritiveMethod();
+		createImage();
+	}
+	
+	private void createImage(){
+Graphics g = background.getGraphics();
+		
+		for(int index=0; index<size+1; index++){
+			for(int count=0; count<size+1; count++){
+				if(value[index][count]!=1.0f){
+					float mul = (((value[index][count]+5)/12));
+					g.setColor(new Color(1,(int)(180*mul),(int)((214*mul)+40)));
+//					g.setColor(new Color((int)(254*mul),(int)(254*mul),(int)(254*mul)));
+				}
+				else
+					g.setColor(Color.red);
+				g.fillRect((index*10)+sx,(count*10)+sy,10,10);
+			}
+		}
 	}
 	
 	private void iteritiveMethod(){
 		int dis = size;
+		float rand =1.0f;
 		while(dis>1){
 			int newdis=dis/2;
 			for(int index=0; index<size/dis; index++)
 				for(int count=0; count<size/dis; count++){
 					int x = index*dis+newdis; int y = count*dis+newdis;
-					value[x][y]=average(value[x+newdis][y+newdis],value[x+newdis][y-newdis],value[x-newdis][y+newdis],value[x-newdis][y-newdis])+random(1.0f);
+					value[x][y]=average(value[x+newdis][y+newdis],value[x+newdis][y-newdis],value[x-newdis][y+newdis],value[x-newdis][y-newdis])+random(rand);
 				}
 			for(int index=0; index<(size/dis)*2+1; index++){
 				if(index%2==0)
 					for(int count=0; count<(size/dis)+0; count++){
 						int x = index*newdis; int y = (count*2+1)*newdis;
-						diamond(x,y,newdis,1.0f);
+						diamond(x,y,newdis,rand);
 					}
 				else
 					for(int count=0; count<(size/dis)+1; count++){
 						int x = index*newdis; int y = (count*2)*newdis;
-						diamond(x,y,newdis,1.0f);
+						diamond(x,y,newdis,rand);
 					}
 			}
 			dis/=2;
+//			rand/=2;
 		}
 	}
 	
 	private void diamond(int x, int y, int dis,float rand){
 		float avg=0f;
-		if(x-dis<0)
-			avg+=value[x-dis+size][y];
-		else
+//		if(x-dis<0)
+//			avg+=value[x-dis+size][y];
+//		else
+//			avg+=value[x-dis][y];
+//		if(y-dis<0)
+//			avg+=value[x][y-dis+size];
+//		else
+//			avg+=value[x][y-dis];
+//		if(x+dis>size)
+//			avg+=value[x+dis-size][y];
+//		else
+//			avg+=value[x+dis][y];
+//		if(y+dis>size)
+//			avg+=value[x][y+dis-size];
+//		else
+//			avg+=value[x][y+dis];
+		
+		int count = 0;
+		if(x-dis>0){
 			avg+=value[x-dis][y];
-		if(y-dis<0)
-			avg+=value[x][y-dis+size];
-		else
+			count++;
+		}
+		if(y-dis>0){
 			avg+=value[x][y-dis];
-		if(x+dis>size-1)
-			avg+=value[x+dis-size][y];
-		else
+			count++;
+		}			
+		if(x+dis<size){
 			avg+=value[x+dis][y];
-		if(y+dis>size-1)
-			avg+=value[x][y+dis-size];
-		else
+			count++;
+		}
+		if(y+dis<size){
 			avg+=value[x][y+dis];
-		value[x][y]=(avg/4)+random(rand);
+			count++;
+		}
+		if(x==size-1){
+			value[x][y]=value[0][y];
+			return;
+		}
+		if(y==size-1){
+			value[x][y]=value[x][0];
+			return;
+		}
+		value[x][y]=(avg/count)+random(rand);
 	}
 	
 	private void squareMethod(int x, int y,int distance,double rand, int iterations){
@@ -120,18 +170,19 @@ public class Game extends JComponent implements MouseListener{
 	int sx=0;
 	int sy=0;
 	public void paint(Graphics g){
-		for(int index=0; index<size+1; index++){
-			for(int count=0; count<size+1; count++){
-				float mul = (((value[index][count]+5)/12));
-				g.setColor(new Color(1,(int)(180*mul),(int)((214*mul)+40)));
-//				g.setColor(new Color((int)(254*mul),(int)(254*mul),(int)(254*mul)));
-				g.fillRect((index)+sx,(count)+sy,1,1);
-			}
-		}
+		g.drawImage(background, sx, sy, null);
+//		g.drawImage(background, sx, size*10+sy, null);
+		g.drawImage(background, size*10+sx-10, sy, null);
+//		g.drawImage(background, 1920+sx, 1080+sy, null);
 		g.setColor(Color.RED);
+		g.drawLine(size*10+sx, 500, size*10+sx, 1080);
 		g.fillRect(1895, 0, 25, 25); //exit box
-//		sx-=10;//sy-=5;
-		
+		sx--;
+//		sy--;
+		if(sx<=-size*10)
+			sx=0;
+		if(sy<=-1080)
+			sy=0;
 //		initArray();
 		repaint();
 	}
